@@ -58,3 +58,9 @@ A programmer for the AVR architecture microcontroller, specifically the ATTiny84
   - `avr-objcopy -O binary fw.elf fw.bin`
   - To see and read the underlying microcode bytes:
     - `xxd -i fw.bin`
+## How to prepare and flash Arduino code
+- 0. Use clone repo (or save as zip and extract)
+- 1. Go to Arduino IDE sketch --> export as binary
+- 2. Go to the sketch directory and copy the .elf file from build to the client folder in clone
+- 3. Use `avr-objcopy -O binary file.elf fw.bin` to convert it to a binary file
+- 4. Use `node program.js` to flash the newly converted bin
