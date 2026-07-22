@@ -9,6 +9,8 @@ A programmer for the AVR architecture microcontroller, specifically the ATTiny84
   - Luckily I managed to bypass the requirement for a 5V programming device by using a 3V3 5V logic converter which works by converting 3.3V signals to 5V signals, which effectively acts as a translator between the Pico and the ATTiny (PS. Any 3.3V to 5V logic converter PCB with support for at least 4 ports (MISO, MOSI, SCK, RESET) should work).
   - It should be noted that not all ATTiny/AVR controllers have this restriction, some could be programmed with just the Pico's 3.3V signals, in which case translation through a logic converter is not needed; however as far as I am concerned the ATTiny84A does need 5V logic.
 
+  - I have used an attiny85 with it and it has worked so idk
+
 ## How to use
 
 ### Flashing software
