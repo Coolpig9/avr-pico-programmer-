@@ -1,5 +1,5 @@
 #include "avrprog.h"
-
+#include <stdio.h>
 #include <pico/stdlib.h>
 #include <hardware/spi.h>
 
@@ -45,7 +45,7 @@ bool avr_enter_programming_mode() {
 int erase_c = 0;
 void avr_erase_memory() {
     if (erase_c > 200) {
-        printf("the erase operation has been performed more than 200 times in this session!\nto protect the flash from a potential infinite erase loop the program has been halted\n");
+        //printf("the erase operation has been performed more than 200 times in this session!\nto protect the flash from a potential infinite erase loop the program has been halted\n");
         while (true) sleep_ms(100);
     }
 
@@ -126,7 +126,7 @@ uint16_t avr_read_program_memory(uint16_t word_address) {
 
 void avr_write_temporary_buffer_page(uint16_t* data, size_t data_len) {
     if (data_len > 32 || data_len == 0) {
-        printf("err - data out of bounds (32/0 / data_len)\n");
+        //printf("err - data out of bounds (32/0 / data_len)\n");
         return;
     }
 
@@ -138,6 +138,9 @@ void avr_write_temporary_buffer_page(uint16_t* data, size_t data_len) {
 bool avr_verify_program_memory_page(uint16_t page_address_start, uint16_t* expected_data, size_t data_len) {
     for (size_t i = 0; i < data_len; i++) {
         uint16_t word = avr_read_program_memory(page_address_start + i);
+        //printf("word: %u", word);
+        //printf("expected word: %u\n", expected_data[i]);
+        printf("byte right: %u",word);
         if (word != expected_data[i]) return false;
     }
 
