@@ -17,8 +17,8 @@ set(PICO_BOARD pico CACHE STRING "Board type")
 
 cmake_minimum_required(VERSION 3.13)
 
-include(/opt/pico-sdk/external/pico_sdk_import.cmake)
-include(/opt/pico-extras/external/pico_extras_import.cmake)
+include("C:/Users/dylan/.pico-sdk/external/pico_sdk_import.cmake")
+include("C:/Users/dylan/.pico-extras/external/pico_extras_import.cmake")
  
 project(prog C CXX ASM)
  
