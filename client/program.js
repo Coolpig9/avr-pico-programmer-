@@ -5,7 +5,6 @@ const { error } = require('console');
 
 const input = fs.readdirSync('./input');
 let inputFile = "./input/"+input[0];
-console.log(process.argv, 'howdy',process.argv.includes('-i'));
 if (process.argv.includes('-i')){
     const index = process.argv.indexOf('-i');
     inputFile = process.argv[index+1];
@@ -25,6 +24,27 @@ if (process.argv.includes('-i')){
         return;
     }
 }
+let data;
+try{
+    data = fs.readFileSync(inputFile, { encoding: "hex" }).match(/.{1,2}/g).map(h => "0x" + h);
+} catch(err){
+    console.log("\x1b[31m\nfile: '"+inputFile+"' dosnt exist!\nplease run without -i or chose a vaild file!\n\x1b[0m")
+    throw err;
+}
+if (process.argv.includes('-makeFirmEmbeded')){
+    if(data.length>2000){
+        console.log("input file too big, max size is "+maxDataSize+" bytes please somthing that falls in that rane");
+        return;
+    }
+    const embeded = `uint8_t eFirm[2000] = {
+   `+data+`+     
+};
+const int eByteAmt = `+data.length+`;`;
+    console.log(embeded,data.length)
+    fs.writeFileSync('embededFirm.h', embeded, 'utf8');
+    return;
+}
+
 
 console.log("\x1b[90mfile selected: "+inputFile+"\x1b[0m")
 let portPath = "COM3"
@@ -68,13 +88,7 @@ const waitForData = () => {
         
     }); 
 };
-let data;
-try{
-    data = fs.readFileSync(inputFile, { encoding: "hex" }).match(/.{1,2}/g).map(h => "0x" + h);
-} catch(err){
-    console.log("\x1b[31m\nfile: '"+inputFile+"' dosnt exist!\nplease run without -i or chose a vaild file!\n\x1b[0m")
-    throw err;
-}
+
 
 port.open((async (err) => {
     if(err) throw err;
