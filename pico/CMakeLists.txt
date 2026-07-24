@@ -16,9 +16,15 @@ set(PICO_EXTRAS_FETCH_FROM_GIT ON)
 set(PICO_BOARD pico CACHE STRING "Board type")
 
 cmake_minimum_required(VERSION 3.13)
+if(WIN32)
+    include("${USERHOME}.pico-sdk/external/pico_sdk_import.cmake")
+    include("${USERHOME}.pico-extras/external/pico_extras_import.cmake")
+else()
+    include("/opt/pico-sdk/external/pico_sdk_import.cmake")
+    include("/opt/pico-extras/external/pico_extras_import.cmake")
+endif()
 
-include("C:/Users/dylan/.pico-sdk/external/pico_sdk_import.cmake")
-include("C:/Users/dylan/.pico-extras/external/pico_extras_import.cmake")
+
  
 project(prog C CXX ASM)
  

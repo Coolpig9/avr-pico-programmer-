@@ -64,6 +64,12 @@ int main() {
 
 #### Using AVR pico Programing Client Method
 
+if its your first time runing this, first use `npm install` in
+terminal or cmd to install depencies
+
+run by doing:
+`node program.js`
+
 - The tool is designed so that you can program firmware using a serial port client, (like the one in the client folder)
 - The client has a couple of flags that you can take advantage of:
   - -i PATH/TO/FIRM       | set the input firmware
@@ -71,13 +77,15 @@ int main() {
   - -makeFirmEmbeded      | makes embededFirm.h for use with the Embeded Firmware option
   - -h                    | desplays the help menu
 (HINT: use device Manager on windows or `ls /dev/ttyUSB* /dev/ttyACM*` on linux to find your COM ports)
+if your on linux and your ports are in /dev/ you may need to run with `sudo`
+
 - Alternatively, you could use a tool such as PuTTY and pasting in the hex of each individual byte of the firmware, each being followed by a space (" ")
 
 ### Using Embeded Program Method
 
 Do you need to program a bunch of AVR micro controllers?? well look no further then the Embeded Program Method!
 Compile your ARV code into the `.u2f` itself so you can flash while only needed to supply power to the pico!
-to do this method simply replace the `embededFirm.h` in the pico folder with your own.
+to do this method simply replace the `embededFirm.h` in the pico folder with your own and recomile it.
 
 ```C
 //embededFirm.h example
@@ -88,6 +96,26 @@ const int eByteAmt = 676;
 ```
 
 You can also generate this file useing the `-makeFirmEmbeded` flag useing the [AVR pico Programing Client](#using-avr-pico-programing-client-method)
+
+To recompile it I recomend using VScode's pico extention,
+
+1. install Pico SDK extention --> [Pico sdk extention for VScode]()
+2. install Cmake Tools extention --> [Cmake tools extention for VScode]()
+3. click the pico icon on the right,
+4. wait for it to load (sometimes it takes a bit)
+5. hit import project
+6. change directory to pico folder
+7. check the "Enable CMake-Tools extension integration"
+8. click compile project!
+
+- if your on windows make sure you have pico-sdk and pico-extras
+  - ${USERHOME}.pico-sdk/external/pico_sdk_import.cmake"
+  - ${USERHOME}.pico-extras/external/pico_extras_import.cmake"
+
+- and if your on linux make sure you have pico-sdk and pico-extras
+  - /opt/pico-sdk/external/pico_sdk_import.cmake
+  - /opt/pico-extras/external/pico_extras_import.cmake
+or set the paths manully in the CMakeLists.txt
 
 ## Motivation
 
