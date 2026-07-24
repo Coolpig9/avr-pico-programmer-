@@ -26,58 +26,82 @@ or compile it yourself with an embeded firmware using [Raspberry Pi Pico SDK for
 
   In case the schematic is unclear: VBUS-HV&VCC | GND-GND&GND | 3V3_OUT-LV | GP19-LV3-HV3-PA6 | GP18-LV2-HV2-PA4 | GP17-LV1-HV1-PB3 | GP16-LV4-HV4-PA5
 
-### Programming
+## AVR Code Compile Commands
 
-#### Node js client method
+This is the test firmware example code:
+```C
+#include <avr/io.h>
+#include <util/delay.h>
 
-- The tool is designed so that you can program firmware using a serial port client, (like the one in the client folder)
-- The client has a couple of flags that you can take advantage of:
-  - -i PATH/TO/FIRM       | set the input firmware
-  - -setPort COMPORTPATH  | set the com path (default is 3) (HINT: use device Manager on windows or `ls /dev/ttyUSB* /dev/ttyACM*` on linux to find one)
-  - -makeFirmEmbeded      | makes embededFirm.h for use with the Embeded Firmware option
-  - -h                    | desplays the help menu
-- Alternatively, you could use a tool such as PuTTY and pasting in the hex of each individual byte of the firmware, each being followed by a space (" ")
+int main() {
+    DDRA = _BV(PA0);
+    while (1) {
+        // Toggle port A.
+        PORTA ^= _BV(PA0);
 
-## Motivation
+        // Busy wait 1 second.
+        _delay_ms(1000);
+    }
 
-- A while back I got hold of an ATTiny84A but had no idea how to program it, later realising I needed an Arduino or a dedicated AVR programmer, hence decided to try to program it via a Raspberry Pi Pico.
-- I started looking through the [ATTiny datasheet](https://ww1.microchip.com/downloads/en/DeviceDoc/ATtiny24A-44A-84A-DataSheet-DS40002269A.pdf) and attempted to program it according to the serial programming section.
-- It served as a fun project as I was interested in the AVR architecture and wanted to challenge myself by writing a programmer for it from scratch.
+    return 0;
+}
+```
 
-## Writing code for AVR
-
-- This is a topic on it's own and may include a guide on programming the ATTiny84A controller as well as others, but in general you will need to install the AVR GCC compiler, AVR assembly compiler, as well as the headers for AVR programming.
-- Due to the nature of how the AVRs registers and control flow works, you will likely not have to write any assembly and can write the whole thing in C as the AVR GCC compiler already handles the interrupt vector table and layout of your program automatically - all you need to include is a main function written by yourself.
-- A sample script in C which toggles the `PA0` pin on and off every second using busy wait (quick rundown - DDRA=IO bank A, _BV(PA0)=Bit shift register key PA0 | basically all that is happening here is that the bit for register PA0 in bank A is being toggled on and off):
-  
-  ```c
-  #include <avr/io.h>
-  #include <util/delay.h>
-  
-  int main() {
-      DDRA = _BV(PA0);
-      while (1) {
-          // Toggle port A.
-          PORTA ^= _BV(PA0);
-  
-          // Busy wait 1 second.
-          _delay_ms(1000);
-      }
-  
-      return 0;
-  }
-  ```
-
-- I then compiled and turned it into a `.bin` microcode binary file with the following bash sequence on Ubuntu (F_CPU is the clock speed of the controller in Hz required by the `delay.h` header):
+- compiled by turned it into a `.bin` microcode binary file with the following bash sequence on Ubuntu (F_CPU is the clock speed of the controller in Hz required by the `delay.h` header):
   - `avr-gcc -DF_CPU=1000000 -mmcu=attiny84a -O2 test.c -o fw.elf`
   - `avr-objcopy -O binary fw.elf fw.bin`
   - To see and read the underlying microcode bytes:
     - `xxd -i fw.bin`
 
-## How to prepare and flash Arduino code
+## How use code made using the Ardeunio IDE
 
-1. Use clone repo (or save as zip and extract)
-2. Go to Arduino IDE sketch --> export as binary
-3. Go to the sketch directory and copy the .elf file from build to the client folder in clone
-4. Use `avr-objcopy -O binary file.elf fw.bin` to convert it to a binary file
-5. Use `node program.js` to flash the newly converted bin
+1. Go to Arduino IDE sketch --> export as binary
+2. Go to the sketch directory and Use `avr-objcopy -O binary program.elf fw.bin` to convert it to a binary file
+3. Copy the .bin file from build to the client input folder
+4. Now its ready to be used by the AVR pico Programing Client or to be embeded!
+
+### Programming
+
+#### Using AVR pico Programing Client Method
+
+- The tool is designed so that you can program firmware using a serial port client, (like the one in the client folder)
+- The client has a couple of flags that you can take advantage of:
+  - -i PATH/TO/FIRM       | set the input firmware
+  - -setPort COMPORTPATH  | set the com path (default is 3)
+  - -makeFirmEmbeded      | makes embededFirm.h for use with the Embeded Firmware option
+  - -h                    | desplays the help menu
+(HINT: use device Manager on windows or `ls /dev/ttyUSB* /dev/ttyACM*` on linux to find your COM ports)
+- Alternatively, you could use a tool such as PuTTY and pasting in the hex of each individual byte of the firmware, each being followed by a space (" ")
+
+### Using Embeded Program Method
+
+Do you need to program a bunch of AVR micro controllers?? well look no further then the Embeded Program Method!
+Compile your ARV code into the `.u2f` itself so you can flash while only needed to supply power to the pico!
+to do this method simply replace the `embededFirm.h` in the pico folder with your own.
+
+```C
+//embededFirm.h example
+uint8_t eFirm[2000] = {
+   0x23,0xc0,0x32,0xc0,0x31,0xc0, ...     
+};
+const int eByteAmt = 676;
+```
+
+You can also generate this file useing the `-makeFirmEmbeded` flag useing the [AVR pico Programing Client](#using-avr-pico-programing-client-method)
+
+## Motivation
+
+SpeedyCraftah's motivation for intialy making this project:
+
+- A while back SpeedyCraftah got hold of an ATTiny84A but had no idea how to program it, later realising they needed an Arduino or a dedicated AVR programmer, hence decided to try to program it via a Raspberry Pi Pico.
+- they started looking through the [ATTiny datasheet](https://ww1.microchip.com/downloads/en/DeviceDoc/ATtiny24A-44A-84A-DataSheet-DS40002269A.pdf) and attempted to program it according to the serial programming section.
+- It served as a fun project as they was interested in the AVR architecture and wanted to challenge themself by writing a programmer for it from scratch.
+
+My motivation for expanding it:
+
+- I dont own an arduino of anykind and I need to make an auto ATtiny programmer as I soon will need to mass program like 500
+- I bought picos as I had had experiance and figured that programing an attiny with one would be pretty easy, it wasnt.
+- Then I found this and after some fanagling I got it working but it wasnt quite what I wanted yet so I chose to fork it and add the features I need myself
+
+Thanks so much to the original creator SpeedyCraftah!
+

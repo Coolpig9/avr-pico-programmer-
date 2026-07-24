@@ -5,6 +5,20 @@ const { error } = require('console');
 
 const input = fs.readdirSync('./input');
 let inputFile = "./input/"+input[0];
+if (process.argv.includes('-h')){
+    console.log(
+`\nWelcome to the AVR Pico Programmer Client!
+To get started put your firmware(s) in the input folder and run normaly
+FLAGS:
+    -i PATH/TO/FIRM         | set the input firmware ex: -i ./firm.bin
+    -setPort COMPORTPATH    | set the com path (default is COM3) ex: -setPort COM3 
+    -makeFirmEmbeded        | makes embededFirm.h for use with the Embeded Firmware option (see read me for details)
+    -h                      | desplays the help menu
+(HINT: use device Manager on windows or 'ls /dev/ttyUSB* /dev/ttyACM*' on linux to find one)`
+    )
+    return;
+}
+
 if (process.argv.includes('-i')){
     const index = process.argv.indexOf('-i');
     inputFile = process.argv[index+1];
@@ -49,8 +63,8 @@ const int eByteAmt = `+data.length+`;`;
 console.log("\x1b[90mfile selected: "+inputFile+"\x1b[0m")
 let portPath = "COM3"
 let port;
-if (process.argv.includes('-setCom')){
-    const index = process.argv.indexOf('-setCom');
+if (process.argv.includes('-setPort')){
+    const index = process.argv.indexOf('-setPort');
     portPath = process.argv[index+1];
 }
 while(true){
@@ -79,7 +93,7 @@ const waitForData = () => {
         };
 
         let timeout = setTimeout(() => {
-            console.log("\x1b[31m\nPico did not repsond!\nMake sure you are using the right COM port\nCOM used: "+portPath+" use'node program.js -setCom $COMPORT' \n\x1b[0m",);
+            console.log("\x1b[31m\nPico did not repsond!\nMake sure you are using the right COM port\nCOM used: "+portPath+" use'node program.js -setPort $COMPORT' \n\x1b[0m",);
             port.removeListener("data", handler);
             reject("Response timeout!");
         }, 5000);
@@ -99,7 +113,7 @@ port.open((async (err) => {
     if ((await waitForData()) !== "READY") {
         console.log(`Programmer did not reply with ready signal!\n
             Make sure you are using the right COM port\n
-            COM used:`+portPath+" use 'node program.js -setCom $COMPORTPATH' ");
+            COM used:`+portPath+" use 'node program.js -setPort $COMPORTPATH' ");
     }
 
     console.log("Sending over program bytes in hex..");
