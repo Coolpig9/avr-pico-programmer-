@@ -95,6 +95,9 @@ uint8_t eFirm[2000] = {
 const int eByteAmt = 676;
 ```
 
+`eFirm` is the program in hex bytes
+`eByteAmt` is the amount of bytes in eFirm
+
 You can also generate this file useing the `-makeFirmEmbeded` flag useing the [AVR pico Programing Client](#using-avr-pico-programing-client-method)
 
 To recompile it I recomend using VScode's pico extention,
