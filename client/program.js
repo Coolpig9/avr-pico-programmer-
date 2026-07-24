@@ -99,7 +99,7 @@ port.open((async (err) => {
     if ((await waitForData()) !== "READY") {
         console.log(`Programmer did not reply with ready signal!\n
             Make sure you are using the right COM port\n
-            COM used:`+portPath+" use 'node program.js -asignCom' or 'node program.js -setCom $COMPORT' ");
+            COM used:`+portPath+" use 'node program.js -setCom $COMPORTPATH' ");
     }
 
     console.log("Sending over program bytes in hex..");
