@@ -60,9 +60,9 @@ int main() {
 3. Copy the .bin file from build to the client input folder
 4. Now its ready to be used by the AVR pico Programing Client or to be embeded!
 
-### Programming
+## Programming
 
-#### Using AVR pico Programing Client Method
+### Using AVR pico Programing Client Method
 
 if its your first time runing this, first use `npm install` in
 terminal or cmd to install depencies
